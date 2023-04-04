@@ -4,8 +4,8 @@ use num_traits::Float;
 use std::fmt::Display;
 use std::ops;
 
-/// a 2D vector
-#[derive(Debug)]
+/// a 2-dimensional vector
+#[derive(Debug, Clone, Copy)]
 pub struct Vector2D<T: Float> {
     /// x coordinate
     pub x: T,
@@ -75,7 +75,7 @@ impl<T: Float> Vector2D<T> {
 }
 
 
-/// A 2D pose
+/// A 2-dimensional pose
 #[derive(Debug)]
 pub struct Pose2D<T: Float> {
     /// Rotation in radians
@@ -96,10 +96,69 @@ impl<T:Float> Pose2D<T> {
     }
 }
 
+/// Implments the Display trait
 impl<T:Float + Display> Display for Pose2D<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
       write!(f, "deg:{} x:{} y:{}", self.theta, self.x, self.y)
     }
 }
+
+
+/// A 2-dimensional Twist
+#[derive(Debug)]
+pub struct Twist2D<T: Float> {
+    /// angular velocity
+    pub thetadot: T,
+
+    /// x velocity
+    pub xdot: T,
+
+    /// y 
+    pub ydot: T
+}
+
+impl<T: Float> Twist2D<T> {
+
+    /// constructs as new Twist2D object from theta, x, and y velocities
+    pub fn new(thetadot: T, xdot: T, ydot: T) -> Self {
+        Twist2D {thetadot, xdot, ydot}
+    }
+}
+
+/// Implements the Display trait
+impl<T:Float + Display> Display for Twist2D<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+      write!(f, "[{}, {}, {}]", self.thetadot, self.xdot, self.ydot)
+    }
+}
+
+/// A 2-dimensional rigid body transformation
+pub struct Transform2D<T: Float> {
+
+    /// rotational component of the transform in radians
+    angle: T,
+
+    /// translational component of the transform
+    p_vec: Vector2D<T>
+}
+
+impl<T: Float> Transform2D<T> {
+    
+    /// contructs a new Transform2D from a translation and rotation
+    pub fn new(trans: Vector2D<T>, angle: T) -> Self {
+        Transform2D {p_vec: trans, angle} 
+    }
+    
+    /// returns the rotatational component of the transform
+    pub fn rotation(&self) -> T {
+        self.angle
+    }
+
+    /// returns the translational component of the transform
+    pub fn translation(&self) -> Vector2D<T> {
+        self.p_vec
+    }
+}
+
 
 
