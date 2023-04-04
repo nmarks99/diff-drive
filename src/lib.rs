@@ -30,11 +30,19 @@ mod tests {
         assert_eq!(p.y, 3.0);
     }
 
+
     #[test]
     fn wheelstate_new() {
         let wheel_angles = WheelState::new(1.57,1.57);
         assert_eq!(wheel_angles.left, 1.57);
         assert_eq!(wheel_angles.right, 1.57);
+    }
+
+    #[test]
+    fn vector2d_from_polar() {
+        let v = Vector2D::from_polar(1.0, utils::deg2rad(90.0));
+        assert!(utils::almost_equal(v.x, 0.0, 1e-12));
+        assert!(utils::almost_equal(v.y, 1.0, 1e-12));
     }
 
     #[test]
@@ -63,5 +71,33 @@ mod tests {
         assert!(utils::almost_equal(norm.x, 0.83205029, 1e-4));
         assert!(utils::almost_equal(norm.y, 0.5547002, 1e-4));
     }
-
+    
+    #[test]
+    fn vector2d_angle() {
+        let v1 = Vector2D::new(1.0,0.0);
+        let v2 = Vector2D::new(0.0,1.0);
+        let angle = v1.angle(&v2);
+        assert_eq!(angle, utils::deg2rad(90.0));
+    }
+    
+    #[test]
+    fn vector2d_plus_operator() {
+        let v1 = Vector2D::new(1.0,3.0);
+        let v2 = Vector2D::new(2.0,5.0);
+        let sum = v1 + v2;
+        assert_eq!(sum.x, 3.0);
+        assert_eq!(sum.y, 8.0);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
