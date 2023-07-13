@@ -1,5 +1,5 @@
 [package]
-name = "diff_drive"
+name = "diff-drive"
 version = "0.1.0"
 edition = "2021"
 
