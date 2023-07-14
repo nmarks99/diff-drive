@@ -75,7 +75,7 @@ impl<T: Float> Vector2D<T> {
 }
 
 /// A 2-dimensional pose
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Pose2D<T: Float> {
     /// x position
     pub x: T,
