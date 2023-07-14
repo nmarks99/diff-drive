@@ -88,7 +88,7 @@ pub struct Pose2D<T: Float> {
 }
 
 impl<T: Float> Pose2D<T> {
-    /// constructs a new Pose2D object from (theta,x,y) which are floats
+    /// constructs a new Pose2D object from (x,y,theta) which are floats
     pub fn new(x: T, y: T, theta: T) -> Self {
         Pose2D { x, y, theta }
     }
