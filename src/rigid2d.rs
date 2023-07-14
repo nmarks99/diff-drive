@@ -133,21 +133,19 @@ impl<T: Float + Display> Display for Twist2D<T> {
 }
 
 /// A 2-dimensional rigid body transformation
+#[derive(Debug, Clone, Copy)]
 pub struct Transform2D<T: Float> {
-    /// rotational component of the transform in radians
-    angle: T,
-
     /// translational component of the transform
     p_vec: Vector2D<T>,
+
+    /// rotational component of the transform in radians
+    angle: T,
 }
 
 impl<T: Float> Transform2D<T> {
     /// contructs a new Transform2D from a translation and rotation
-    pub fn new(trans: Vector2D<T>, angle: T) -> Self {
-        Transform2D {
-            p_vec: trans,
-            angle,
-        }
+    pub fn new(p_vec: Vector2D<T>, angle: T) -> Self {
+        Transform2D { p_vec, angle }
     }
 
     /// returns the rotatational component of the transform
@@ -158,5 +156,25 @@ impl<T: Float> Transform2D<T> {
     /// returns the translational component of the transform
     pub fn translation(&self) -> Vector2D<T> {
         self.p_vec
+    }
+}
+
+impl<T: Float> ops::Mul<Transform2D<T>> for Transform2D<T> {
+    type Output = Transform2D<T>;
+
+    fn mul(self, rhs: Transform2D<T>) -> Transform2D<T> {
+        let mut p_new = Vector2D::new(T::from(0.0).unwrap(), T::from(0.0).unwrap());
+        p_new.x =
+            self.p_vec.x + rhs.p_vec.x * T::cos(self.angle) - rhs.p_vec.y * T::sin(self.angle);
+
+        p_new.y =
+            self.p_vec.y + rhs.p_vec.x * T::sin(self.angle) + rhs.p_vec.y * T::cos(self.angle);
+
+        let angle_new = self.angle + rhs.angle;
+
+        Transform2D {
+            p_vec: p_new,
+            angle: angle_new,
+        }
     }
 }
