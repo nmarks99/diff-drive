@@ -1,4 +1,5 @@
 /// rigid2D: 2D rigid body motion library
+use crate::utils::almost_equal;
 use num_traits::Float;
 use std::fmt::Display;
 use std::ops;
@@ -156,6 +157,26 @@ impl<T: Float> Transform2D<T> {
     /// returns the translational component of the transform
     pub fn translation(&self) -> Vector2D<T> {
         self.p_vec
+    }
+    /// computes the transform cooresponding to a rigid body
+    /// following a constant twist in its original body frame for
+    /// one time unit
+    pub fn integrate_twist(&self, v: Twist2D<T>) -> Self {
+        if almost_equal(v.thetadot, T::from(0.0).unwrap(), T::from(0.0001).unwrap()) {
+            let p = Vector2D::new(v.xdot, v.ydot);
+            Transform2D {
+                p_vec: p,
+                angle: T::from(0.0).unwrap(),
+            }
+        } else {
+            let angle = v.thetadot;
+            let mut vec = Vector2D::new(T::from(0.0).unwrap(), T::from(0.0).unwrap());
+            vec.x = (T::from(1.0).unwrap() / angle)
+                * (-v.ydot + v.xdot * T::sin(angle) + v.ydot * T::cos(angle));
+            vec.y = (T::from(1.0).unwrap() / angle)
+                * (v.xdot - v.xdot * T::cos(angle) + v.ydot * T::sin(angle));
+            Transform2D { p_vec: vec, angle }
+        }
     }
 }
 

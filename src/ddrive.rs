@@ -1,4 +1,6 @@
-use crate::rigid2d::{Pose2D, Twist2D};
+#![allow(non_snake_case)]
+
+use crate::rigid2d::{Pose2D, Transform2D, Twist2D, Vector2D};
 use crate::utils;
 use anyhow;
 use num_traits::Float;
@@ -61,7 +63,9 @@ impl<T: Float + Default> DiffDrive<T> {
         }
     }
 
-    pub fn inverse_kinematics(&mut self, v: Twist2D<T>) -> WheelState<T> {
+    /// Computes the wheel speeds needed to obtain the given twist.
+    /// this can also be considered inverse kinematics
+    pub fn speeds_from_twist(&mut self, v: Twist2D<T>) -> WheelState<T> {
         if !utils::almost_equal(v.ydot, T::from(0.0).unwrap(), T::from(0.0001).unwrap()) {
             panic!("Non-zero y component of twist is not possible");
         }
@@ -72,5 +76,50 @@ impl<T: Float + Default> DiffDrive<T> {
         self.phidot.left = (T::from(1.0).unwrap() / r) * (-d * v.thetadot + v.xdot);
         self.phidot.right = (T::from(1.0).unwrap() / r) * (d * v.thetadot + v.xdot);
         self.phidot
+    }
+
+    /// Computes the body twist for the given wheel speeds
+    pub fn twist_from_speeds(&self, phidot: WheelState<T>) -> Twist2D<T> {
+        Twist2D::new(
+            (self.wheel_radius / self.wheel_separation) * (phidot.right - phidot.left),
+            (self.wheel_radius / T::from(2.0).unwrap()) * (phidot.left + phidot.right),
+            T::from(0.0).unwrap(),
+        )
+    }
+
+    /// computes the forward kinematics to find
+    /// the new pose of robot given new wheel angles
+    pub fn forward_kinematics(&mut self, pose: Pose2D<T>, phi_new: WheelState<T>) -> Pose2D<T> {
+        // update the pose with the provided pose
+        self.pose = pose;
+
+        // Compute the new wheel speeds for a single timestep (t=1)
+        self.phidot.left = phi_new.left - self.phi.left;
+        self.phidot.right = phi_new.right - self.phi.right;
+
+        // update the wheel angles with the provided ones
+        self.phi = phi_new;
+
+        // Get the twist from the new wheel speeds
+        let body_twist = self.twist_from_speeds(self.phidot);
+
+        // Define the transform between the world and B frame
+        // B is the body frame before achieving the new wheel angles phi_new
+        let Twb = Transform2D::new(Vector2D::new(self.pose.x, self.pose.y), self.pose.theta);
+
+        // The transform between the B and B' frames can be obtained by
+        // integrating the twist forward. B' is the body frame once the
+        // robotb has acheieved phi_new
+        let Tb_bprime = Twb.integrate_twist(body_twist);
+
+        // Get the B' frame in the world frame by applying this transform
+        let Tw_bprime = Twb * Tb_bprime;
+
+        // Get the new pose from Tw_bprime and return it
+        self.pose.theta = Tw_bprime.rotation();
+        self.pose.x = Tw_bprime.translation().x;
+        self.pose.y = Tw_bprime.translation().y;
+
+        self.pose
     }
 }

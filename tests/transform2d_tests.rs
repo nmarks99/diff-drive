@@ -1,4 +1,4 @@
-use diff_drive::rigid2d::{Transform2D, Vector2D};
+use diff_drive::rigid2d::{Transform2D, Twist2D, Vector2D};
 use diff_drive::utils::{self, almost_equal};
 use std::f64::consts::PI;
 
@@ -29,4 +29,37 @@ fn transform2d_mul() {
     assert!(almost_equal(tf3.rotation(), 0.0, 0.0001));
     assert!(almost_equal(tf3.translation().x, 7.0, 0.0001));
     assert!(almost_equal(tf3.translation().y, 10.0, 0.0001));
+}
+
+#[test]
+fn transform2d_integrate_twist() {
+    // Pure translation
+    {
+        let v = Twist2D::new(0.0, 1.0, 0.0);
+        let tf = Transform2D::new(Vector2D::new(0.0, 0.0), 0.0);
+        let tf_new = tf.integrate_twist(v);
+        assert!(almost_equal(tf_new.translation().x, 1.0, 1e-6));
+        assert!(almost_equal(tf_new.translation().y, 0.0, 1e-6));
+        assert!(almost_equal(tf_new.rotation(), 0.0, 1e-6));
+    }
+
+    // Pure rotation
+    {
+        let v = Twist2D::new(PI, 0.0, 0.0);
+        let tf = Transform2D::new(Vector2D::new(0.0, 0.0), 0.0);
+        let tf_new = tf.integrate_twist(v);
+        assert!(almost_equal(tf_new.translation().x, 0.0, 1e-6));
+        assert!(almost_equal(tf_new.translation().y, 0.0, 1e-6));
+        assert!(almost_equal(tf_new.rotation(), PI, 1e-6));
+    }
+
+    // Rotation and Translation
+    {
+        let v = Twist2D::new(2.0 * PI, PI, PI);
+        let tf = Transform2D::new(Vector2D::new(0.0, 0.0), 0.0);
+        let tf_new = tf.integrate_twist(v);
+        assert!(almost_equal(tf_new.translation().x, 0.0, 1e-6));
+        assert!(almost_equal(tf_new.translation().y, 0.0, 1e-6));
+        assert!(almost_equal(tf_new.rotation(), 2.0 * PI, 1e-6));
+    }
 }
