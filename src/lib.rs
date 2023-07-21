@@ -20,7 +20,7 @@
 //! const WHEEL_RADIUS: f64 = 0.03;
 //! fn main() {
 //!     let v = Vector2D::new(1.0, 1.0);
-//!     let p = Pose2D::new(1.0, 2.0);
+//!     let p = Pose2D::new(1.0, 2.0, 3.14);
 //!     let robot = DiffDrive::new(WHEEL_RADIUS, WHEEL_SEPARATION);
 //! }
 //! ```

@@ -1,3 +1,4 @@
+use crate::rigid2d::Vector2D;
 use num_traits::Float;
 use std::fmt::Display;
 
@@ -24,4 +25,9 @@ pub fn normalize_angle<T: Float>(rad: T) -> T {
     } else {
         return rad.sin().atan2(rad.cos());
     }
+}
+
+/// Computes the linear distance between to points
+pub fn distance<T: Float>(a: Vector2D<T>, b: Vector2D<T>) -> T {
+    T::sqrt((b.x - a.x).powf(T::from(2.0).unwrap()) + (b.y - a.y).powf(T::from(2.0).unwrap()))
 }
