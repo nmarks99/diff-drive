@@ -22,7 +22,7 @@ impl<T: Float> ops::Add<Vector2D<T>> for Vector2D<T> {
     }
 }
 
-/// Implements the Displayy trait for Vector2D
+/// Implements the Display trait for Vector2D
 impl<T: Float + Display> Display for Vector2D<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "[{}, {}]", self.x, self.y)
@@ -72,6 +72,11 @@ impl<T: Float> Vector2D<T> {
             v_norm = Vector2D::new(self.x / mag, self.y / mag);
         }
         return v_norm;
+    }
+
+    /// returns the Vector2D<T> as a Vec<T>
+    pub fn as_vec(&self) -> Vec<T> {
+        vec![self.x, self.y]
     }
 }
 
