@@ -75,7 +75,7 @@ impl<T: Float> Vector2D<T> {
     }
 
     /// returns the Vector2D<T> as a Vec<T>
-    pub fn as_vec(&self) -> Vec<T> {
+    pub fn to_vec(&self) -> Vec<T> {
         vec![self.x, self.y]
     }
 }
