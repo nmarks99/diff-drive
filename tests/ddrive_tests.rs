@@ -13,7 +13,7 @@ fn wheelstate_new() {
 #[test]
 fn diffdrive_ik() {
     let v = Twist2D::new(1.0, 1.0, 0.0);
-    let mut ddrive = DiffDrive::new(1.0, 2.0);
+    let ddrive = DiffDrive::new(1.0, 2.0);
     let speeds: WheelState<f64> = ddrive.speeds_from_twist(v);
     println!("{:?}", speeds);
 }
