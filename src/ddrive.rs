@@ -63,13 +63,13 @@ pub struct DiffDrive<T: Float + Default> {
     wheel_separation: T,
 
     /// x,y,theta position in meters, radians
-    pose: Pose2D<T>,
+    pub pose: Pose2D<T>,
 
     /// Wheel positions in radians
-    phi: WheelState<T>,
+    pub wheel_angles: WheelState<T>,
 
     /// Wheel speeds in radians per second
-    phidot: WheelState<T>,
+    pub wheel_speeds: WheelState<T>,
 }
 
 impl<T: Float + Default> DiffDrive<T> {
@@ -78,8 +78,8 @@ impl<T: Float + Default> DiffDrive<T> {
             wheel_radius,
             wheel_separation,
             pose: Pose2D::default(),
-            phi: WheelState::default(),
-            phidot: WheelState::default(),
+            wheel_angles: WheelState::default(),
+            wheel_speeds: WheelState::default(),
         }
     }
 
@@ -93,9 +93,9 @@ impl<T: Float + Default> DiffDrive<T> {
         let d = self.wheel_separation / T::from(2.0).unwrap();
         let r = self.wheel_radius;
 
-        self.phidot.left = (T::from(1.0).unwrap() / r) * (-d * v.thetadot + v.xdot);
-        self.phidot.right = (T::from(1.0).unwrap() / r) * (d * v.thetadot + v.xdot);
-        self.phidot
+        self.wheel_speeds.left = (T::from(1.0).unwrap() / r) * (-d * v.thetadot + v.xdot);
+        self.wheel_speeds.right = (T::from(1.0).unwrap() / r) * (d * v.thetadot + v.xdot);
+        self.wheel_speeds
     }
 
     /// Computes the body twist for the given wheel speeds
@@ -114,14 +114,14 @@ impl<T: Float + Default> DiffDrive<T> {
         self.pose = pose;
 
         // Compute the new wheel speeds for a single timestep (t=1)
-        self.phidot.left = phi_new.left - self.phi.left;
-        self.phidot.right = phi_new.right - self.phi.right;
+        self.wheel_speeds.left = phi_new.left - self.wheel_angles.left;
+        self.wheel_speeds.right = phi_new.right - self.wheel_angles.right;
 
         // update the wheel angles with the provided ones
-        self.phi = phi_new;
+        self.wheel_angles = phi_new;
 
         // Get the twist from the new wheel speeds
-        let body_twist = self.twist_from_speeds(self.phidot);
+        let body_twist = self.twist_from_speeds(self.wheel_speeds);
 
         // Define the transform between the world and B frame
         // B is the body frame before achieving the new wheel angles phi_new
