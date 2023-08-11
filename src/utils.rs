@@ -17,6 +17,14 @@ pub fn rad2deg<T: Float>(rad: T) -> T {
     rad * T::from(180.0 / std::f64::consts::PI).unwrap()
 }
 
+pub fn rpm_to_rad_per_sec<T: Float>(speed: T) -> T {
+    speed * T::from((2.0 * std::f64::consts::PI) / 60.0).unwrap()
+}
+
+pub fn rad_per_sec_to_rpm<T: Float>(speed: T) -> T {
+    speed * T::from(60.0 / (2.0 * std::f64::consts::PI)).unwrap()
+}
+
 /// Normalizes an angle in radians to be between -pi and pi
 pub fn normalize_angle<T: Float>(rad: T) -> T {
     let pi = T::from(std::f64::consts::PI).unwrap();
