@@ -13,7 +13,7 @@ fn wheelstate_new() {
 #[test]
 fn diffdrive_ik() {
     let v = Twist2D::new(1.0, 1.0, 0.0);
-    let ddrive = DiffDrive::new(1.0, 2.0);
+    let mut ddrive = DiffDrive::new(1.0, 2.0);
     let speeds: WheelState<f64> = ddrive.speeds_from_twist(v);
     println!("{:?}", speeds);
 }
@@ -36,8 +36,7 @@ fn diffdrive_fk() {
         let mut robot = DiffDrive::new(R_TEST, D_TEST * 2.0);
         let phi_new = WheelState::new(1.57, 1.57);
         let pose0 = Pose2D::new(0.0, 0.0, 0.0);
-        robot.pose = pose0;
-        let new_pose = robot.forward_kinematics(phi_new);
+        let new_pose = robot.forward_kinematics(pose0, phi_new);
         assert!(almost_equal(new_pose.x, 1.57, 1e-6));
         assert!(almost_equal(new_pose.y, 0.0, 1e-6));
         assert!(almost_equal(new_pose.theta, 0.0, 1e-6));
@@ -47,7 +46,8 @@ fn diffdrive_fk() {
     {
         let mut robot = DiffDrive::new(R_TEST, D_TEST * 2.0);
         let phi_new = WheelState::new(-1.57, -1.57);
-        let new_pose = robot.forward_kinematics(phi_new);
+        let pose0 = Pose2D::new(0.0, 0.0, 0.0);
+        let new_pose = robot.forward_kinematics(pose0, phi_new);
         assert!(almost_equal(new_pose.x, -1.57, 1e-6));
         assert!(almost_equal(new_pose.y, 0.0, 1e-6));
         assert!(almost_equal(new_pose.theta, 0.0, 1e-6));
@@ -57,7 +57,8 @@ fn diffdrive_fk() {
     {
         let mut robot = DiffDrive::new(R_TEST, D_TEST * 2.0);
         let phi_new = WheelState::new(PI, 0.0);
-        let new_pose = robot.forward_kinematics(phi_new);
+        let pose0 = Pose2D::new(0.0, 0.0, 0.0);
+        let new_pose = robot.forward_kinematics(pose0, phi_new);
         assert!(almost_equal(new_pose.x, 1.0, 1e-6));
         assert!(almost_equal(new_pose.y, -1.0, 1e-6));
         assert!(almost_equal(new_pose.theta, -PI / 2.0, 1e-6));
@@ -68,7 +69,7 @@ fn diffdrive_fk() {
         let mut robot = DiffDrive::new(R_TEST, D_TEST * 2.0);
         let phi_new = WheelState::new(-PI, PI);
         let pose0 = Pose2D::new(0.0, 0.0, 0.0);
-        let new_pose = robot.forward_kinematics(phi_new);
+        let new_pose = robot.forward_kinematics(pose0, phi_new);
         assert!(almost_equal(new_pose.x, pose0.x, 1e-6));
         assert!(almost_equal(new_pose.y, pose0.y, 1e-6));
         assert!(almost_equal(new_pose.theta, PI, 1e-6));
