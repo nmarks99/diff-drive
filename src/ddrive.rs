@@ -109,10 +109,7 @@ impl<T: Float + Default> DiffDrive<T> {
 
     /// computes the forward kinematics to find
     /// the new pose of robot given new wheel angles
-    pub fn forward_kinematics(&mut self, pose: Pose2D<T>, phi_new: WheelState<T>) -> Pose2D<T> {
-        // update the pose with the provided pose
-        self.pose = pose;
-
+    pub fn forward_kinematics(&mut self, phi_new: WheelState<T>) -> Pose2D<T> {
         // Compute the new wheel speeds for a single timestep (t=1)
         self.wheel_speeds.left = phi_new.left - self.wheel_angles.left;
         self.wheel_speeds.right = phi_new.right - self.wheel_angles.right;
