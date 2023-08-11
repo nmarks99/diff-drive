@@ -23,6 +23,18 @@ impl<T: Float + Default> WheelState<T> {
     pub fn new(left: T, right: T) -> Self {
         WheelState { left, right }
     }
+
+    /// Converts the revolutions per minute from radians per second
+    pub fn convert_to_rpm(&mut self) {
+        self.left = utils::rad_per_sec_to_rpm(self.left);
+        self.right = utils::rad_per_sec_to_rpm(self.right);
+    }
+
+    /// Converts from radians per second to revolutions per minute
+    pub fn convert_to_rad_per_sec(&mut self) {
+        self.left = utils::rpm_to_rad_per_sec(self.left);
+        self.right = utils::rad_per_sec_to_rpm(self.right);
+    }
 }
 
 impl<T> Display for WheelState<T>
