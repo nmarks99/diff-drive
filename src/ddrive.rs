@@ -85,6 +85,7 @@ impl<T: Float + Default> DiffDrive<T> {
 
     /// Computes the wheel speeds needed to obtain the given twist.
     /// this can also be considered inverse kinematics
+    /// TODO: do not mutate self here
     pub fn speeds_from_twist(&mut self, v: Twist2D<T>) -> WheelState<T> {
         if !utils::almost_equal(v.ydot, T::from(0.0).unwrap(), T::from(0.0001).unwrap()) {
             panic!("Non-zero y component of twist is not possible");
@@ -93,6 +94,10 @@ impl<T: Float + Default> DiffDrive<T> {
         let d = self.wheel_separation / T::from(2.0).unwrap();
         let r = self.wheel_radius;
 
+        // WheelState::new(
+        //     (T::from(1.0).unwrap() / r) * (-d * v.thetadot + v.xdot),
+        //     (T::from(1.0).unwrap() / r) * (d * v.thetadot + v.xdot),
+        // )
         self.phidot.left = (T::from(1.0).unwrap() / r) * (-d * v.thetadot + v.xdot);
         self.phidot.right = (T::from(1.0).unwrap() / r) * (d * v.thetadot + v.xdot);
         self.phidot
@@ -109,15 +114,15 @@ impl<T: Float + Default> DiffDrive<T> {
 
     /// computes the forward kinematics to find
     /// the new pose of robot given new wheel angles
-    pub fn forward_kinematics(&mut self, pose: Pose2D<T>, phi_new: WheelState<T>) -> Pose2D<T> {
+    pub fn forward_kinematics(&mut self, phi_new: WheelState<T>) -> Pose2D<T> {
         // update the pose with the provided pose
-        self.pose = pose;
+        // self.pose = pose;
 
         // Compute the new wheel speeds for a single timestep (t=1)
         self.phidot.left = phi_new.left - self.phi.left;
         self.phidot.right = phi_new.right - self.phi.right;
 
-        // update the wheel angles with the provided ones
+        // Update the wheel angles with the provided ones
         self.phi = phi_new;
 
         // Get the twist from the new wheel speeds
@@ -125,6 +130,7 @@ impl<T: Float + Default> DiffDrive<T> {
 
         // Define the transform between the world and B frame
         // B is the body frame before achieving the new wheel angles phi_new
+        // in other words, self.pose here is the old pose
         let Twb = Transform2D::new(Vector2D::new(self.pose.x, self.pose.y), self.pose.theta);
 
         // The transform between the B and B' frames can be obtained by
