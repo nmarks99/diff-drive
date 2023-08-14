@@ -75,3 +75,29 @@ fn diffdrive_fk() {
         assert!(almost_equal(new_pose.theta, PI, 1e-6));
     }
 }
+
+#[test]
+fn fk_test2() {
+    print!("\n\n\n");
+    const R_TEST: f32 = 0.045;
+    const D_TEST: f32 = 0.103;
+
+    let start = 0.0;
+    let stop = 3.1;
+    let step = 0.1;
+    let left_angles: Vec<f32> = (start as usize..=((stop+step)/step) as usize).map(|i| i as f32 * step).collect();
+    let right_angles: Vec<f32> = (start as usize..=((stop+step)/step) as usize).map(|i| i as f32 * step).collect();
+
+    let mut robot = DiffDrive::new(R_TEST, D_TEST);
+    let mut wheel_angles = WheelState::new(0.0, 0.0);
+    for i in 0..left_angles.len() {
+        wheel_angles.left = left_angles[i];
+        wheel_angles.right = right_angles[i];
+        let pose = robot.forward_kinematics(wheel_angles);
+        println!("Pose = {}", pose);
+    }
+    print!("\n\n\n");
+}
+
+
+
