@@ -86,7 +86,7 @@ impl<T: Float + Default> DiffDrive<T> {
     /// Computes the wheel speeds needed to obtain the given twist.
     /// this can also be considered inverse kinematics
     /// TODO: do not mutate self here
-    pub fn speeds_from_twist(&mut self, v: Twist2D<T>) -> WheelState<T> {
+    pub fn speeds_from_twist(&self, v: Twist2D<T>) -> WheelState<T> {
         if !utils::almost_equal(v.ydot, T::from(0.0).unwrap(), T::from(0.0001).unwrap()) {
             panic!("Non-zero y component of twist is not possible");
         }
@@ -94,13 +94,13 @@ impl<T: Float + Default> DiffDrive<T> {
         let d = self.wheel_separation / T::from(2.0).unwrap();
         let r = self.wheel_radius;
 
-        // WheelState::new(
-        //     (T::from(1.0).unwrap() / r) * (-d * v.thetadot + v.xdot),
-        //     (T::from(1.0).unwrap() / r) * (d * v.thetadot + v.xdot),
-        // )
-        self.phidot.left = (T::from(1.0).unwrap() / r) * (-d * v.thetadot + v.xdot);
-        self.phidot.right = (T::from(1.0).unwrap() / r) * (d * v.thetadot + v.xdot);
-        self.phidot
+        WheelState::new(
+            (T::from(1.0).unwrap() / r) * (-d * v.thetadot + v.xdot),
+            (T::from(1.0).unwrap() / r) * (d * v.thetadot + v.xdot),
+        )
+        // self.phidot.left = (T::from(1.0).unwrap() / r) * (-d * v.thetadot + v.xdot);
+        // self.phidot.right = (T::from(1.0).unwrap() / r) * (d * v.thetadot + v.xdot);
+        // self.phidot
     }
 
     /// Computes the body twist for the given wheel speeds
