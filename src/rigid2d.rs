@@ -1,5 +1,5 @@
 /// rigid2D: 2D rigid body motion library
-use crate::utils::almost_equal;
+use crate::utils::{almost_equal, rad2deg};
 use num_traits::Float;
 use std::fmt::Display;
 use std::ops;
@@ -103,7 +103,7 @@ impl<T: Float> Pose2D<T> {
 /// Implments the Display trait
 impl<T: Float + Display> Display for Pose2D<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "deg:{} x:{} y:{}", self.theta, self.x, self.y)
+        write!(f, "deg:{} x:{} y:{}", rad2deg(self.theta), self.x, self.y)
     }
 }
 
