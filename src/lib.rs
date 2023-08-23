@@ -29,6 +29,7 @@
 
 pub mod ddrive;
 pub mod rigid2d;
+pub mod trajectory;
 pub mod utils;
 
 #[cfg(test)]

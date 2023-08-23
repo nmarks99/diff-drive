@@ -35,6 +35,25 @@ pub fn normalize_angle<T: Float>(rad: T) -> T {
     }
 }
 
+/// Creates a linearly spaced vector of floats from start to stop with the given
+/// number of points in between
+pub fn linspace<T: Float>(start: T, stop: T, num_points: usize) -> Vec<T> {
+    let step: T = (stop - start) / T::from(num_points - 1).unwrap();
+    (0..num_points)
+        .map(|i| start + T::from(i).unwrap() * step)
+        .collect()
+}
+
+/// Creates a vector of floats from the given start to stop, and separated by the step
+pub fn arange<T: Float>(start: T, stop: T, step: T) -> Vec<T> {
+    let num_points: usize = (((stop - start) / step) + T::from(1.0).unwrap())
+        .to_usize()
+        .unwrap();
+    (0..num_points)
+        .map(|i| start + T::from(i).unwrap() * step)
+        .collect()
+}
+
 /// Computes the linear distance between to points
 pub fn distance<T: Float>(a: Vector2D<T>, b: Vector2D<T>) -> T {
     T::sqrt((b.x - a.x).powf(T::from(2.0).unwrap()) + (b.y - a.y).powf(T::from(2.0).unwrap()))
