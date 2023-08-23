@@ -32,3 +32,15 @@ fn test_rad_per_sec_to_rpm() {
     let speed_rpm = rad_per_sec_to_rpm(speed_rad_per_sec);
     assert!(almost_equal(speed_rpm, 60.0, 1e-6,))
 }
+
+#[test]
+fn test_linspace() {
+    let x = linspace(0.0, 5.0, 10);
+    println!("linspace (0,5,10): {:?}", x);
+}
+
+#[test]
+fn test_arange() {
+    let x = arange(0.0, 11.0, 1.0);
+    println!("arange (0,11,1): {:?}", x);
+}
