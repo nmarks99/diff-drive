@@ -1,5 +1,7 @@
 use diff_drive::rigid2d::Vector2D;
-use diff_drive::utils::{almost_equal, distance, rad_per_sec_to_rpm, rpm_to_rad_per_sec};
+use diff_drive::utils::{
+    almost_equal, arange, distance, linspace, rad_per_sec_to_rpm, rpm_to_rad_per_sec,
+};
 
 #[test]
 fn test_almost_equal() {

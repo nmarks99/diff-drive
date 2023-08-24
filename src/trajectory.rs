@@ -38,17 +38,6 @@ impl Path {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    // #[test]
-    // fn test_semi_circle_path() {
-    //     let path = Path::semi_circle(0.1, 10);
-    //     let _ = path.write_to_csv("semi-circle.csv");
-    // }
-}
-
 // fn create_ref_traj() -> anyhow::Result<(Vec<f32>, Vec<f32>)> {
 //     let mut traj_file = csv::Writer::from_path("traj.csv")?;
 //

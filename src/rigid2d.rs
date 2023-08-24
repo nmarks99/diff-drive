@@ -74,6 +74,13 @@ impl<T: Float> Vector2D<T> {
         return v_norm;
     }
 
+    pub fn distance(&self, p2: Vector2D<T>) -> T {
+        T::sqrt(
+            T::from(p2.x - self.x).unwrap().powf(T::from(2.0).unwrap())
+                + T::from(p2.y - self.y).unwrap().powf(T::from(2.0).unwrap()),
+        )
+    }
+
     /// returns the Vector2D<T> as a Vec<T>
     pub fn to_vec(&self) -> Vec<T> {
         vec![self.x, self.y]

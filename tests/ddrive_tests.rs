@@ -13,7 +13,7 @@ fn wheelstate_new() {
 #[test]
 fn diffdrive_ik() {
     let v = Twist2D::new(1.0, 1.0, 0.0);
-    let mut ddrive = DiffDrive::new(1.0, 2.0);
+    let ddrive = DiffDrive::new(1.0, 2.0);
     let speeds: WheelState<f64> = ddrive.speeds_from_twist(v);
     println!("{:?}", speeds);
 }
@@ -85,8 +85,12 @@ fn fk_test2() {
     let start = 0.0;
     let stop = 3.1;
     let step = 0.1;
-    let left_angles: Vec<f32> = (start as usize..=((stop+step)/step) as usize).map(|i| i as f32 * step).collect();
-    let right_angles: Vec<f32> = (start as usize..=((stop+step)/step) as usize).map(|i| i as f32 * step).collect();
+    let left_angles: Vec<f32> = (start as usize..=((stop + step) / step) as usize)
+        .map(|i| i as f32 * step)
+        .collect();
+    let right_angles: Vec<f32> = (start as usize..=((stop + step) / step) as usize)
+        .map(|i| i as f32 * step)
+        .collect();
 
     let mut robot = DiffDrive::new(R_TEST, D_TEST);
     let mut wheel_angles = WheelState::new(0.0, 0.0);
@@ -98,6 +102,3 @@ fn fk_test2() {
     }
     print!("\n\n\n");
 }
-
-
-
